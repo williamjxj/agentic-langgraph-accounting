@@ -1,0 +1,6 @@
+invoice_id,vendor,amount,date,status
+INV-2024-001,Legal Associates,3050.0,2026-01-25,Pending
+INV-2024-002,Legal Associates,3150.0,2026-01-20,Pending
+INV-2024-003,Marketing Pros,3500.0,2026-02-01,Pending
+INV-2024-004,Office Supplies Co,1000.0,2026-01-30,Pending
+INV-2024-005,Marketing Pros,3000.0,2026-01-22,Pending
