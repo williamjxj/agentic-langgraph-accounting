@@ -194,6 +194,8 @@ Access the UI at `http://localhost:8501`
 
 ## 💬 Example Queries
 
+**📚 For a comprehensive query guide with 50+ examples, tips, and best practices, see [docs/qa.md](docs/qa.md)**
+
 ### SQL-Routed Queries (Structured Data)
 ```
 "What's the total amount by vendor?"
@@ -385,6 +387,7 @@ See [docs/improvement-1.md](docs/improvement-1.md) for detailed changelog.
 
 ## 📚 Documentation
 
+- **[docs/qa.md](docs/qa.md)** - 📊 **Comprehensive Query Guide & FAQ** (50+ example queries, tips, troubleshooting)
 - [docs/cross-platform-validation.md](docs/cross-platform-validation.md) - **Cross-platform compatibility validation**
 - [docs/data-management.md](docs/data-management.md) - Data storage architecture & path management
 - [docs/improvement-3.md](docs/improvement-3.md) - Phase 3: Cross-platform compatibility & path management

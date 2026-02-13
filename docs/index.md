@@ -14,7 +14,29 @@ This project demonstrates a production-ready agentic AI system that intelligentl
 
 **Repository:** [github.com/williamjxj/agentic-langgraph-accounting](https://github.com/williamjxj/agentic-langgraph-accounting)
 
+---
+
+## 🎯 Quick Start Tips
+
+**New to the application?** Start here:
+
+1. **📖 Read the [Query Guide & FAQ](qa.md)** - Learn what questions you can ask with 50+ examples
+2. **🔍 Understand Route Visibility** - Every response shows which path was taken (SQL, RAG, or Hybrid)
+3. **💡 Try the Example Queries** - Copy-paste ready queries to explore the dataset
+4. **🐛 Check Troubleshooting** - Common issues and solutions
+
+**Key Features to Explore:**
+- Ask about **250 invoices** across 50 vendors, 12 categories, 11 departments
+- Query **20+ audit reports** (quarterly, vendor analysis, compliance)
+- Watch the **route visualization** show exactly how your query was processed
+- Test **hybrid search** by mixing SQL and RAG keywords
+
+---
+
 ## 📚 Documentation Index
+
+### Quick Start & Usage
+- **[Query Guide & FAQ](qa.md)** - 📊 **Comprehensive guide with 50+ example queries, tips, and troubleshooting** (NEW!)
 
 ### Project Overview & Analysis
 - **[Technical Estimation](estimation.md)** - Comprehensive project analysis, architecture decisions, and implementation roadmap
