@@ -1,6 +1,6 @@
 import os
 from typing import List, Dict, Any
-from langchain_community.embeddings import FakeEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
 from rank_bm25 import BM25Okapi
@@ -9,7 +9,12 @@ import numpy as np
 class RAGService:
     def __init__(self):
         import os
-        self.embeddings = FakeEmbeddings(size=1536)
+        # Use sentence-transformers for real semantic search
+        self.embeddings = HuggingFaceEmbeddings(
+            model_name="sentence-transformers/all-MiniLM-L6-v2",
+            model_kwargs={'device': 'cpu'},
+            encode_kwargs={'normalize_embeddings': True}
+        )
         self.persist_directory = "chroma_db"
         self.vector_store = None
         self.bm25 = None

@@ -6,6 +6,7 @@ pydantic-settings
 langchain
 langchain-openai
 langchain-community
+langchain-huggingface
 langgraph
 chromadb
 openai
@@ -20,7 +21,14 @@ tabulate
 pytesseract
 pdf2image
 pypdf
+fpdf
 langchain-chroma
 SQLAlchemy[asyncio]
 aiosqlite
 rank_bm25
+sentence-transformers
+
+# HuggingFace dataset integration (for data augmentation)
+datasets
+transformers
+pillow

@@ -52,20 +52,32 @@ async def startup():
                         vendor=row['vendor'],
                         amount=row['amount'],
                         date=row['date'],
-                        status=row['status']
+                        status=row.get('status', 'Pending'),
+                        due_date=row.get('due_date'),
+                        payment_terms=row.get('payment_terms'),
+                        po_number=row.get('po_number'),
+                        category=row.get('category'),
+                        department=row.get('department'),
+                        subtotal=row.get('subtotal'),
+                        tax_rate=row.get('tax_rate'),
+                        tax_amount=row.get('tax_amount'),
+                        approval_status=row.get('approval_status', row.get('status', 'Pending')),
+                        notes=row.get('notes')
                     )
                     session.add(inv)
                 await session.commit()
             
     global audit_agent_graph
-    agent_instance = AuditAgent(rag_service)
+    agent_instance = AuditAgent(rag_service, async_session)
     audit_agent_graph = agent_instance.build_graph()
 
 @app.post("/query")
 async def query_agent(request: QueryRequest):
     initial_state = {
         "messages": [HumanMessage(content=request.query)],
-        "context": {}
+        "context": "",
+        "sql_results": "",
+        "next_action": ""
     }
     
     # Run the agent (which is now a mock bypass)

@@ -70,6 +70,8 @@ class ETLService:
 
 # For testing
 if __name__ == "__main__":
+    from pathlib import Path
     etl = ETLService()
-    # Mocking async run
-    # asyncio.run(etl.run_pipeline("accounting_rag_app/data"))
+    # Example: Run from project root
+    # project_root = Path(__file__).parent.parent
+    # asyncio.run(etl.run_pipeline(str(project_root / "data")))

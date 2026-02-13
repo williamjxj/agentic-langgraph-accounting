@@ -23,6 +23,18 @@ class Invoice(Base):
     date: Mapped[str] = mapped_column(String)
     status: Mapped[str] = mapped_column(String, default="Pending")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=func.now())
+    
+    # New fields for rich metadata
+    due_date: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    payment_terms: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    po_number: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    category: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    department: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    subtotal: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    tax_rate: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    tax_amount: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    approval_status: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    notes: Mapped[Optional[str]] = mapped_column(String, nullable=True)
 
 # Pydantic Schemas
 class InvoiceSchema(BaseModel):

@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 import pandas as pd
+from pathlib import Path
 import os
 
 st.set_page_config(page_title="Accounting AI Auditor", layout="wide")
@@ -59,7 +60,9 @@ if prompt := st.chat_input("Ask about invoices, vendors, or the audit report..."
 # Show Mock Data Info
 with st.expander("System Info & Mock Data"):
     st.write("The system is pre-loaded with mock invoices and a 2024 Audit Report.")
-    csv_path = "accounting_rag_app/data/invoice_summary.csv"
-    if os.path.exists(csv_path):
-        df = pd.read_csv(csv_path)
+    # Use Path for cross-platform compatibility
+    project_root = Path(__file__).resolve().parent.parent
+    csv_path = project_root / "data" / "invoice_summary.csv"
+    if csv_path.exists():
+        df = pd.read_csv(str(csv_path))
         st.dataframe(df)

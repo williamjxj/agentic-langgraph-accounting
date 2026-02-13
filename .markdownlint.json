@@ -1,0 +1,23 @@
+{
+  "default": true,
+  "MD013": false,
+  "MD022": false,
+  "MD024": false,
+  "MD031": false,
+  "MD032": false,
+  "MD033": false,
+  "MD034": false,
+  "MD041": false,
+  "MD046": false,
+  "MD040": false,
+  "MD060": false,
+  "MD029": {
+    "style": "ordered"
+  },
+  "line-length": false,
+  "no-duplicate-heading": false,
+  "no-inline-html": false,
+  "no-bare-urls": false,
+  "first-line-heading": false,
+  "code-block-style": false
+}
