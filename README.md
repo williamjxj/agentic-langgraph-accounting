@@ -1,5 +1,11 @@
 # 📑 Accounting AI Auditor (Agentic RAG)
 
+![Python](https://img.shields.io/badge/python-3.11+-blue.svg)
+![LangChain](https://img.shields.io/badge/LangChain-latest-green)
+![LangGraph](https://img.shields.io/badge/LangGraph-agentic-purple)
+![FastAPI](https://img.shields.io/badge/FastAPI-modern-teal)
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+
 A cutting-edge AI application for automated accounting audits and invoice processing. Built with the latest tech stack for AI agents **with true agentic workflows and intelligent routing**.
 
 ## 🚀 Tech Stack
