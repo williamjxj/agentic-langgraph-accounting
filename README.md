@@ -8,6 +8,9 @@
 
 A cutting-edge AI application for automated accounting audits and invoice processing. Built with the latest tech stack for AI agents **with true agentic workflows and intelligent routing**.
 
+![Application Screenshot](docs/screenshot.png)
+*Interactive Streamlit UI showing route visualization and intelligent query routing*
+
 ## 🚀 Tech Stack
 - **Orchestration**: [LangGraph](https://github.com/langchain-ai/langgraph) with `StateGraph` for real agentic workflows
 - **Framework**: [LangChain](https://github.com/langchain-ai/langchain) for RAG and tool integration
@@ -191,6 +194,16 @@ streamlit run frontend/app.py
 ```
 
 Access the UI at `http://localhost:8501`
+
+**You should see:**
+
+![Application Interface](docs/screenshot.png)
+
+The interface shows:
+- 🔍 **Route visibility** - See which nodes were executed (route → query_sql → generate)
+- 🗄️ **Data source indicators** - SQL database, RAG documents, or hybrid search
+- 💬 **Chat interface** - Natural language queries with intelligent routing
+- 📊 **Rich responses** - Combined insights from 250 invoices and 20+ audit reports
 
 ## 💬 Example Queries
 
