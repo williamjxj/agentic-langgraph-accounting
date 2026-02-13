@@ -11,6 +11,7 @@ class AgentState(TypedDict):
     context: str
     next_action: str
     sql_results: str
+    route_path: List[str]
 
 class AuditAgent:
     def __init__(self, rag_service, async_session_maker=None):
@@ -30,6 +31,7 @@ class AuditAgent:
 
     async def route_query(self, state: AgentState) -> AgentState:
         """Determine if the query needs SQL, RAG, or both."""
+        state["route_path"].append("route")
         query = state["messages"][-1].content.lower()
         
         # Keywords that suggest SQL database queries
@@ -55,6 +57,7 @@ class AuditAgent:
 
     async def query_sql(self, state: AgentState) -> AgentState:
         """Query the SQL database for invoice data."""
+        state["route_path"].append("query_sql")
         if not self.async_session_maker:
             state["sql_results"] = "⚠️ SQL database not available."
             return state
@@ -191,6 +194,7 @@ class AuditAgent:
 
     async def query_rag(self, state: AgentState) -> AgentState:
         """Retrieve relevant documents from the RAG store."""
+        state["route_path"].append("query_rag")
         query = state["messages"][-1].content
         
         if self.rag_service:
@@ -204,16 +208,21 @@ class AuditAgent:
 
     async def generate_answer(self, state: AgentState) -> AgentState:
         """Generate final answer using LLM with context from SQL and/or RAG."""
+        state["route_path"].append("generate")
         query = state["messages"][-1].content
-        route_taken = state.get("next_action", "unknown")
         
-        # Add route visibility
-        route_emoji = {
-            "query_sql": "🗄️",
-            "query_rag": "📄",
-            "query_both": "🔄"
-        }
-        route_display = f"{route_emoji.get(route_taken, '🤔')} **Route: {route_taken.replace('query_', '').upper()}**\n\n"
+        # Build detailed route visualization
+        route_path = state.get("route_path", [])
+        route_display = f"🔍 **Route:** {' → '.join(route_path)}\n\n"
+        
+        # Add execution summary based on which query nodes were hit
+        executed_nodes = set(route_path)
+        if "query_sql" in executed_nodes and "query_rag" in executed_nodes:
+            route_display += "📊 *Hybrid search: SQL database + document retrieval*\n\n"
+        elif "query_sql" in executed_nodes:
+            route_display += "🗄️ *Direct SQL database query*\n\n"
+        elif "query_rag" in executed_nodes:
+            route_display += "📄 *Document semantic search*\n\n"
         
         if self.llm:
             # Build context from available sources
@@ -260,6 +269,8 @@ class AuditAgent:
 
     async def query_both(self, state: AgentState) -> AgentState:
         """Query both SQL and RAG."""
+        state["route_path"].append("query_both")
+        # Note: query_sql and query_rag will also append to path
         state = await self.query_sql(state)
         state = await self.query_rag(state)
         return state
@@ -311,6 +322,8 @@ class AuditAgent:
             state["sql_results"] = ""
         if "next_action" not in state:
             state["next_action"] = ""
+        if "route_path" not in state:
+            state["route_path"] = []
         
         result = await self.graph.ainvoke(state, config)
         return result

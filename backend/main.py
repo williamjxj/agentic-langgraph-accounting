@@ -77,7 +77,8 @@ async def query_agent(request: QueryRequest):
         "messages": [HumanMessage(content=request.query)],
         "context": "",
         "sql_results": "",
-        "next_action": ""
+        "next_action": "",
+        "route_path": []
     }
     
     # Run the agent (which is now a mock bypass)
