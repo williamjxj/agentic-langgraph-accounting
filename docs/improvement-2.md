@@ -297,7 +297,7 @@ Status Distribution:
 ### Generate Enhanced Mock Data
 
 ```bash
-cd accounting_rag_app
+cd agentic-langgraph-accounting
 python utils/generate_mock_data.py
 ```
 
@@ -405,7 +405,7 @@ loader.list_datasets()
 ## 📚 File Structure
 
 ```
-accounting_rag_app/
+agentic-langgraph-accounting/
 ├── utils/
 │   ├── generate_mock_data.py     # Enhanced: 250 invoices, rich metadata
 │   ├── generate_reports.py       # NEW: Comprehensive report generator

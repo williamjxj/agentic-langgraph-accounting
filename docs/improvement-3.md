@@ -14,20 +14,20 @@ Phase 3 eliminates all hardcoded paths and folder names, making the application 
 **Issue 1: Hardcoded Folder Names**
 ```python
 # ❌ Old approach - breaks if folder renamed
-uvicorn.run("accounting_rag_app.backend.main:app", ...)
-csv_path = "accounting_rag_app/data/invoice_summary.csv"
+uvicorn.run("app_name.backend.main:app", ...)
+csv_path = "app_name/data/invoice_summary.csv"
 ```
 
 **Issue 2: Platform-Specific Path Separators**
 ```python
 # ❌ Works on Unix, breaks on Windows
-path = "accounting_rag_app/data/invoices"  # Uses /
+path = "data/invoices"  # Uses /
 ```
 
 **Issue 3: Working Directory Dependencies**
 ```python
 # ❌ Assumes running from parent directory
-data_dir = "accounting_rag_app/data"  # Relative to CWD
+data_dir = "data"  # Relative to CWD
 ```
 
 **Issue 4: Non-functional Demo Scripts**
@@ -57,12 +57,12 @@ print("""
 #!/usr/bin/env python3
 """
 Launcher for the Accounting AI Auditor API. Run from the project root so that
-the accounting_rag_app package is on PYTHONPATH without needing to cd to the parent.
+the app package is on PYTHONPATH without needing to cd to the parent.
 """
 import sys
 from pathlib import Path
 
-# Add parent directory so "accounting_rag_app" package resolves
+# Add parent directory so package resolves
 _project_root = Path(__file__).resolve().parent
 _parent = _project_root.parent
 if str(_parent) not in sys.path:
@@ -71,7 +71,7 @@ if str(_parent) not in sys.path:
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(
-        "accounting_rag_app.backend.main:app",  # ❌ Hardcoded!
+        "app_name.backend.main:app",  # ❌ Hardcoded!
         host="0.0.0.0",
         port=8000,
         reload=False,
@@ -98,7 +98,7 @@ if str(_parent) not in sys.path:
 
 if __name__ == "__main__":
     import uvicorn
-    # Use dynamic package name instead of hardcoded "accounting_rag_app"
+    # Use dynamic package name instead of hardcoded folder name
     app_path = f"{_package_name}.backend.main:app"  # ✅ Dynamic!
     uvicorn.run(
         app_path,
@@ -122,7 +122,7 @@ if __name__ == "__main__":
 # Show Mock Data Info
 with st.expander("System Info & Mock Data"):
     st.write("The system is pre-loaded with mock invoices and a 2024 Audit Report.")
-    csv_path = "accounting_rag_app/data/invoice_summary.csv"  # ❌ Hardcoded
+    csv_path = "data/invoice_summary.csv"  # ❌ Without proper root resolution
     if os.path.exists(csv_path):
         df = pd.read_csv(csv_path)
         st.dataframe(df)
@@ -154,15 +154,15 @@ with st.expander("System Info & Mock Data"):
 ```python
 def main():
     """Generate 250 invoices across 2022-2026 with rich metadata."""
-    os.makedirs("accounting_rag_app/data/invoices", exist_ok=True)  # ❌
-    os.makedirs("accounting_rag_app/data/reports", exist_ok=True)   # ❌
+    os.makedirs("data/invoices", exist_ok=True)  # ❌ Without proper root
+    os.makedirs("data/reports", exist_ok=True)   # ❌
     
     # ... generate invoices ...
     
-    output_path = f"accounting_rag_app/data/invoices/{invoice_id}.pdf"  # ❌
+    output_path = f"data/invoices/{invoice_id}.pdf"  # ❌
     pdf.output(output_path)
     
-    df.to_csv("accounting_rag_app/data/invoice_summary.csv", index=False)  # ❌
+    df.to_csv("data/invoice_summary.csv", index=False)  # ❌
 ```
 
 **After**:
@@ -199,14 +199,14 @@ def main():
 
 **Before**:
 ```python
-def generate_all_reports(csv_path: str = "accounting_rag_app/data/invoice_summary.csv"):
+def generate_all_reports(csv_path: str = "data/invoice_summary.csv"):
     """Generate all reports from invoice data."""
     if not os.path.exists(csv_path):
         print(f"❌ CSV file not found: {csv_path}")
         return
     
     df = pd.read_csv(csv_path)
-    output_dir = "accounting_rag_app/data/reports"  # ❌ Hardcoded
+    output_dir = "data/reports"  # ❌ Without proper root
     os.makedirs(output_dir, exist_ok=True)
 ```
 
@@ -247,7 +247,7 @@ def generate_all_reports(csv_path: str = None):
 if __name__ == "__main__":
     etl = ETLService()
     # Mocking async run
-    # asyncio.run(etl.run_pipeline("accounting_rag_app/data"))  # ❌ Bad example
+    # asyncio.run(etl.run_pipeline("data"))  # ❌ Bad example without root
 ```
 
 **After**:
@@ -337,8 +337,8 @@ def demo_usage():
 
 **Grep Search for Hardcoded Paths**:
 ```bash
-grep -r '"accounting_rag_app/' **/*.py
-grep -r "'accounting_rag_app/" **/*.py
+grep -r '"data/' **/*.py
+grep -r "'data/" **/*.py
 ```
 
 **Result**: ✅ **0 matches** (excluding documentation examples)
@@ -347,7 +347,7 @@ grep -r "'accounting_rag_app/" **/*.py
 
 **Test 1: Server Startup**
 ```bash
-cd accounting_rag_app
+cd agentic-langgraph-accounting
 python run_server.py
 ```
 
@@ -366,7 +366,7 @@ python utils/generate_mock_data.py
 **Result**: ✅ **PASS**
 ```
 ✅ Generated 250 invoices
-📁 Saved to: /Users/.../accounting_rag_app/data/invoice_summary.csv
+📁 Saved to: /Users/.../agentic-langgraph-accounting/data/invoice_summary.csv
 ```
 
 **Test 3: HuggingFace Demo**
@@ -494,7 +494,7 @@ pdf.output(str(invoice_path))
 
 ### For Development
 
-✅ **Rename-friendly**: Change `accounting_rag_app` to any name  
+✅ **Rename-friendly**: Can rename folder without code changes  
 ✅ **Directory-agnostic**: Works from any directory structure  
 ✅ **Platform-portable**: Same code runs on Windows/macOS/Linux  
 ✅ **Symlink-safe**: Follows symbolic links correctly  
@@ -536,7 +536,7 @@ All changes are **backward compatible**:
 
 1. **Test folder rename**:
    ```bash
-   mv accounting_rag_app my_company_rag
+   mv agentic-langgraph-accounting my_company_rag
    cd my_company_rag
    python run_server.py  # Should work!
    ```

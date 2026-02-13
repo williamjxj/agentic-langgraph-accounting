@@ -166,7 +166,7 @@ Data flow: **User query → FastAPI `/query` → AuditAgent retrieves RAG docs �
 
 - **Hardcoded `localhost:8000`**: fails when backend is elsewhere or in Docker.
 - No env-based API URL or config.
-- CSV path `accounting_rag_app/data/...` assumes CWD; breaks when running from other dirs.
+- CSV paths assume CWD; breaks when running from other directories.
 - No auth; anyone with access can query and upload.
 - Synchronous `requests`; no streaming or progress for long answers.
 

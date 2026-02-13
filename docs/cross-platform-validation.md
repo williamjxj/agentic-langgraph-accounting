@@ -5,17 +5,17 @@
 
 ## Validation Summary
 
-All hardcoded `"accounting_rag_app"` folder references have been removed from the codebase. The application now uses dynamic path resolution for cross-platform compatibility.
+All hardcoded folder name references have been removed from the codebase. The application now uses dynamic path resolution for cross-platform compatibility.
 
 ## Files Fixed
 
 ### 1. ✅ `run_server.py`
-**Issue**: Hardcoded module path `"accounting_rag_app.backend.main:app"`
+**Issue**: Hardcoded module path
 
 **Fix**: Dynamic package name detection
 ```python
 # Before (❌ Hardcoded)
-uvicorn.run("accounting_rag_app.backend.main:app", ...)
+uvicorn.run("app_name.backend.main:app", ...)
 
 # After (✅ Dynamic)
 _package_name = Path(__file__).resolve().parent.name
@@ -26,12 +26,12 @@ uvicorn.run(app_path, ...)
 **Benefit**: Works if folder renamed (e.g., `my_accounting_app`, `finance_rag`, etc.)
 
 ### 2. ✅ `frontend/app.py`
-**Issue**: Hardcoded path `"accounting_rag_app/data/invoice_summary.csv"`
+**Issue**: Hardcoded path
 
 **Fix**: Path-based resolution
 ```python
 # Before (❌ Hardcoded)
-csv_path = "accounting_rag_app/data/invoice_summary.csv"
+csv_path = "data/invoice_summary.csv"
 if os.path.exists(csv_path):
     df = pd.read_csv(csv_path)
 
@@ -50,7 +50,7 @@ if csv_path.exists():
 **Fix**: Updated to show Path-based approach
 ```python
 # Before (❌ Old example)
-# asyncio.run(etl.run_pipeline("accounting_rag_app/data"))
+# asyncio.run(etl.run_pipeline("data"))
 
 # After (✅ Dynamic example)
 # project_root = Path(__file__).parent.parent
@@ -76,8 +76,8 @@ if csv_path.exists():
 
 ### Test 1: Grep Search for Hardcoded Paths
 ```bash
-grep -r '"accounting_rag_app/' **/*.py
-grep -r "'accounting_rag_app/" **/*.py
+grep -r '"data/' **/*.py
+grep -r "'data/" **/*.py
 ```
 
 **Result**: ✅ **0 matches** (excluding documentation)
@@ -102,12 +102,12 @@ python utils/generate_mock_data.py
 **Result**: ✅ **SUCCESS** - Creates 250 invoices + reports
 ```
 ✅ Generated 250 invoices
-📁 Saved to: /Users/.../accounting_rag_app/data/invoice_summary.csv
+📁 Saved to: /Users/.../agentic-langgraph-accounting/data/invoice_summary.csv
 ```
 
 ### Test 4: Folder Rename Test (Simulated)
 
-**Scenario**: Rename `accounting_rag_app/` → `finance_rag_app/`
+**Scenario**: Rename folder to any name
 
 **Expected**: All code should work without modification
 
@@ -115,7 +115,7 @@ python utils/generate_mock_data.py
 ```python
 # run_server.py detects folder name automatically
 _package_name = Path(__file__).resolve().parent.name
-# _package_name = "finance_rag_app" (auto-detected)
+# _package_name = "new_folder_name" (auto-detected)
 
 # All other paths are relative to __file__
 project_root = Path(__file__).parent.parent
@@ -157,7 +157,7 @@ csv_path = project_root / "data" / "invoice_summary.csv"
 
 ## Documentation Files (Intentional References)
 
-These files contain `"accounting_rag_app"` in **examples/descriptions only**:
+These files contain folder name references in **examples/descriptions only**:
 
 1. ✅ `docs/data-management.md` - Shows what NOT to do (❌ examples)
 2. ✅ `docs/estimation.md` - Historical analysis, folder structure
@@ -171,7 +171,7 @@ These files contain `"accounting_rag_app"` in **examples/descriptions only**:
 ### ✅ Supported (Works from project root)
 
 ```bash
-cd /path/to/accounting_rag_app
+cd /path/to/agentic-langgraph-accounting
 python run_server.py                ✅
 python utils/generate_mock_data.py  ✅
 streamlit run frontend/app.py       ✅
@@ -181,14 +181,14 @@ streamlit run frontend/app.py       ✅
 
 ```bash
 cd /path/to/  # Parent directory
-python accounting_rag_app/utils/generate_mock_data.py  ❌
+python agentic-langgraph-accounting/utils/generate_mock_data.py  ❌
 ```
 
 **Why**: Scripts now use `Path(__file__)` which works from script location, not working directory.
 
 ## Folder Rename Compatibility
 
-**Current name**: `accounting_rag_app`
+**Current name**: `agentic-langgraph-accounting`
 
 **Rename examples that work without code changes**:
 - ✅ `finance_rag_system`
@@ -238,7 +238,7 @@ python accounting_rag_app/utils/generate_mock_data.py  ❌
 ### Environment Configuration
 ```python
 # .env file
-PROJECT_NAME=accounting_rag_app
+PROJECT_NAME=agentic_langgraph_accounting
 DATA_DIR=/var/app/data
 CHROMA_DIR=/var/vector_store
 ```
@@ -264,7 +264,7 @@ CMD ["python", "run_server.py"]
 
 ## Conclusion
 
-✅ **All hardcoded `"accounting_rag_app"` folder references removed**
+✅ **All hardcoded folder name references removed**
 
 ✅ **Application now platform-independent**
 

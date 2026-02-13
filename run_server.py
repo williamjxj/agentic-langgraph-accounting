@@ -16,7 +16,7 @@ if str(_parent) not in sys.path:
 
 if __name__ == "__main__":
     import uvicorn
-    # Use dynamic package name instead of hardcoded "accounting_rag_app"
+    # Use dynamic package name instead of hardcoded folder name
     app_path = f"{_package_name}.backend.main:app"
     uvicorn.run(
         app_path,

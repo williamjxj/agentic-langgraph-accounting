@@ -132,10 +132,10 @@ streamlit run frontend/app.py --server.port 8501
 
 ```bash
 # Generate 250 invoices with rich metadata
-python -m accounting_rag_app.utils.generate_mock_data
+python -m utils.generate_mock_data
 
 # Load HuggingFace dataset samples
-python -m accounting_rag_app.utils.load_hf_datasets
+python -m utils.load_hf_datasets
 ```
 
 ## 🔍 Development Phases

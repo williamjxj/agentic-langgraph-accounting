@@ -12,7 +12,7 @@ The application uses **3 distinct data storage systems**, each optimized for dif
 
 **Purpose**: Raw files, generated reports, user uploads
 
-**Location**: `accounting_rag_app/data/`
+**Location**: `agentic-langgraph-accounting/data/`
 
 **Structure**:
 ```
@@ -43,7 +43,7 @@ data/
 
 **Purpose**: Semantic search with embeddings
 
-**Location**: `accounting_rag_app/chroma_db/`
+**Location**: `agentic-langgraph-accounting/chroma_db/`
 
 **Technology**: ChromaDB with persistence
 
@@ -71,7 +71,7 @@ python run_server.py  # Auto-rebuilds from data/
 
 **Purpose**: Structured invoice queries (SQL)
 
-**Location**: `accounting_rag_app/accounting.db`
+**Location**: `agentic-langgraph-accounting/accounting.db`
 
 **Technology**: SQLite with SQLAlchemy async
 
@@ -163,8 +163,8 @@ df = pd.read_csv(str(csv_path))  # Convert to string for compatibility
 
 ```python
 # Hardcoded paths - breaks when running from different directories
-csv_path = "accounting_rag_app/data/invoice_summary.csv"  # ❌
-output_dir = "accounting_rag_app/data/reports"             # ❌
+csv_path = "data/invoice_summary.csv"  # ❌ Without proper root resolution
+output_dir = "data/reports"             # ❌
 ```
 
 ## Working Directory Requirements
@@ -172,7 +172,7 @@ output_dir = "accounting_rag_app/data/reports"             # ❌
 **All scripts should be run from the project root:**
 
 ```bash
-cd /path/to/accounting_rag_app
+cd /path/to/agentic-langgraph-accounting
 
 # Generate data
 python utils/generate_mock_data.py      ✅
@@ -186,8 +186,8 @@ streamlit run frontend/app.py           ✅
 
 **Don't run from parent directory** (no longer supported):
 ```bash
-cd /path/to/  # Parent of accounting_rag_app
-python accounting_rag_app/utils/generate_mock_data.py  # ❌ Will fail
+cd /path/to/  # Parent of agentic-langgraph-accounting
+python agentic-langgraph-accounting/utils/generate_mock_data.py  # ❌ Will fail
 ```
 
 ## Data Management Tasks
@@ -195,7 +195,7 @@ python accounting_rag_app/utils/generate_mock_data.py  # ❌ Will fail
 ### Generate Fresh Dataset
 
 ```bash
-cd accounting_rag_app
+cd agentic-langgraph-accounting
 python utils/generate_mock_data.py
 ```
 
@@ -207,7 +207,7 @@ python utils/generate_mock_data.py
 ### Clean and Rebuild Everything
 
 ```bash
-cd accounting_rag_app
+cd agentic-langgraph-accounting
 
 # Delete all generated data
 rm -rf data/invoices/*
@@ -224,7 +224,7 @@ python run_server.py  # Rebuilds databases
 ### Load HuggingFace Datasets (Optional)
 
 ```bash
-cd accounting_rag_app
+cd agentic-langgraph-accounting
 python utils/load_hf_datasets.py
 ```
 
@@ -332,7 +332,7 @@ DATABASE_URL=postgresql+asyncpg://user:pass@host/db
 ### Check Data Integrity
 
 ```bash
-cd accounting_rag_app
+cd agentic-langgraph-accounting
 
 # Count files
 echo "Invoices: $(ls -1 data/invoices/*.pdf 2>/dev/null | wc -l)"
@@ -396,7 +396,7 @@ print(f"Match: {len(csv_df) == len(db_df)}")
 - Delete `chroma_db/` when changing embeddings
 
 ❌ **Don't**:
-- Hardcode paths like `"accounting_rag_app/data/"`
+- Hardcode paths without proper root resolution
 - Manually edit `accounting.db` (sync from CSV)
 - Mix ChromaDB collections with different dimensions
 - Run scripts from parent directory

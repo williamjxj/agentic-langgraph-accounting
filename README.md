@@ -119,7 +119,7 @@ User Query → Router → [SQL | RAG | Both] → Answer Generation
 
 ### Generate Mock Data
 ```bash
-cd accounting_rag_app
+cd agentic-langgraph-accounting
 python utils/generate_mock_data.py
 ```
 
@@ -160,7 +160,7 @@ export DEEPSEEK_API_KEY='your-api-key'
 
 ### 2. Install Dependencies (from project root)
 ```bash
-cd accounting_rag_app
+cd agentic-langgraph-accounting
 python3 -m venv venv
 source venv/bin/activate   # Windows: venv\Scripts\activate
 pip install -r requirements.txt
@@ -169,13 +169,13 @@ pip install -r requirements.txt
 **First run note:** The sentence-transformers model (~80MB) will download automatically.
 
 ### 3. Start the Backend
-From inside the project directory (`accounting_rag_app`):
+From inside the project directory (`agentic-langgraph-accounting`):
 ```bash
 python run_server.py
 ```
-Or from the **parent** of `accounting_rag_app`:
+Or from the **parent** of `agentic-langgraph-accounting`:
 ```bash
-python -m uvicorn accounting_rag_app.backend.main:app --host 0.0.0.0 --port 8000
+python -m uvicorn agentic_langgraph_accounting.backend.main:app --host 0.0.0.0 --port 8000
 ```
 
 The backend will:
@@ -260,7 +260,7 @@ The interface shows:
 
 ## 📂 Project Structure
 ```
-accounting_rag_app/
+agentic-langgraph-accounting/
 ├── agents/           # LangGraph agent with StateGraph
 │   └── audit_agent.py   # Router, SQL tool, RAG tool, answer generation
 ├── backend/          # FastAPI application and endpoints
@@ -360,7 +360,7 @@ DEEPSEEK_API_KEY=your-key-here
 See [docs/improvement-3.md](docs/improvement-3.md) and [docs/cross-platform-validation.md](docs/cross-platform-validation.md) for detailed reports.
 
 **Summary:**
-- ✅ **Zero hardcoded paths** - removed all `"accounting_rag_app/"` references
+- ✅ **Zero hardcoded paths** - removed all hardcoded folder name references
 - ✅ **Dynamic package detection** - `run_server.py` auto-detects folder name
 - ✅ **Portable Path handling** - all scripts use `pathlib.Path` for cross-platform compatibility
 - ✅ **Folder rename support** - works if project folder renamed (e.g., `my_accounting_app`)
