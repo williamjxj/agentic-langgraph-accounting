@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: 'en-US' }}">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+{% seo %}
+    <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
+    <style>
+      /* Enhanced navigation */
+      .site-nav {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 1rem 0;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      }
+      
+      .nav-container {
+        max-width: 64rem;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      
+      .site-title {
+        color: white;
+        font-size: 1.5rem;
+        font-weight: bold;
+        text-decoration: none;
+        margin: 0;
+      }
+      
+      .site-title:hover {
+        opacity: 0.9;
+      }
+      
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      
+      .nav-links a {
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        transition: background 0.3s;
+      }
+      
+      .nav-links a:hover {
+        background: rgba(255,255,255,0.2);
+      }
+      
+      /* Enhanced footer */
+      .site-footer {
+        margin-top: 4rem;
+        padding: 2rem 0;
+        background: #f5f7fa;
+        border-top: 1px solid #e1e4e8;
+      }
+      
+      .footer-container {
+        max-width: 64rem;
+        margin: 0 auto;
+        padding: 0 2rem;
+        text-align: center;
+        color: #586069;
+      }
+      
+      .footer-links {
+        margin-top: 1rem;
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+      }
+      
+      .footer-links a {
+        color: #0366d6;
+        text-decoration: none;
+      }
+      
+      .footer-links a:hover {
+        text-decoration: underline;
+      }
+      
+      /* Responsive */
+      @media (max-width: 768px) {
+        .nav-container {
+          flex-direction: column;
+          gap: 1rem;
+        }
+        
+        .nav-links {
+          flex-direction: column;
+          gap: 0.5rem;
+          width: 100%;
+        }
+        
+        .nav-links a {
+          display: block;
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="site-nav">
+      <div class="nav-container">
+        <a href="{{ '/' | relative_url }}" class="site-title">
+          🤖 {{ site.title | default: site.github.repository_name }}
+        </a>
+        <ul class="nav-links">
+          <li><a href="{{ '/qa.html' | relative_url }}">Query Guide</a></li>
+          <li><a href="{{ '/estimation.html' | relative_url }}">Technical Docs</a></li>
+          <li><a href="{{ '/data-management.html' | relative_url }}">Architecture</a></li>
+          <li><a href="{{ site.github.repository_url }}">GitHub</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container-lg px-3 my-5 markdown-body">
+      {% if site.title and site.title != page.title %}
+      <h1><a href="{{ '/' | relative_url }}">{{ site.title }}</a></h1>
+      {% endif %}
+
+      {{ content }}
+
+      {% if site.github.private != true and site.github.license %}
+      <div class="footer border-top border-gray-light mt-5 pt-3 text-right text-gray">
+        This site is open source. {% github_edit_link "Improve this page" %}.
+      </div>
+      {% endif %}
+    </div>
+
+    <footer class="site-footer">
+      <div class="footer-container">
+        <p>
+          <strong>{{ site.title }}</strong><br>
+          {{ site.description }}
+        </p>
+        <div class="footer-links">
+          <a href="{{ site.github.repository_url }}">View on GitHub</a>
+          <a href="{{ site.github.repository_url }}/issues">Report Issue</a>
+          <a href="{{ site.github.repository_url }}/blob/main/LICENSE">License</a>
+        </div>
+        <p style="margin-top: 1rem; font-size: 0.9rem;">
+          Built with ❤️ using LangGraph, DeepSeek, and Jekyll
+        </p>
+      </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js" integrity="sha256-lZaRhKri35AyJSypXXs4o6OPFTbTmUoltBbDCbdzegg=" crossorigin="anonymous"></script>
+    <script>anchors.add();</script>
+  </body>
+</html>

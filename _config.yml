@@ -1,0 +1,72 @@
+# GitHub Pages Configuration for Agentic LangGraph Accounting
+
+# Theme settings
+theme: jekyll-theme-cayman
+title: Agentic LangGraph Accounting
+description: AI-powered accounting auditor built with DeepSeek LLM, LangGraph StateGraph, and RAG
+author: williamjxj
+
+# Repository information
+repository: williamjxj/agentic-langgraph-accounting
+url: https://williamjxj.github.io
+baseurl: /agentic-langgraph-accounting
+
+# Build settings
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+  
+# Plugins
+plugins:
+  - jekyll-relative-links
+  - jekyll-optional-front-matter
+  - jekyll-readme-index
+  - jekyll-titles-from-headings
+  - jekyll-github-metadata
+
+# Relative links configuration
+relative_links:
+  enabled: true
+  collections: true
+
+# Optional front matter
+optional_front_matter:
+  remove_originals: false
+
+# Titles from headings
+titles_from_headings:
+  enabled: true
+  strip_title: true
+  collections: true
+
+# Files to exclude from build
+exclude:
+  - .env
+  - .git
+  - .gitignore
+  - venv/
+  - __pycache__/
+  - "*.pyc"
+  - requirements.txt
+  - README.md
+  - agents/
+  - backend/
+  - chroma_db/
+  - data/
+  - frontend/
+  - models/
+  - services/
+  - utils/
+  - accounting.db
+  - run_server.py
+  - "*.py"
+
+# Files to include
+include:
+  - docs/
+
+# GitHub Pages settings
+github:
+  is_project_page: true
+  show_downloads: false
