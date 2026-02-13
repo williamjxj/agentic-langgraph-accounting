@@ -56,16 +56,45 @@ class AuditAgent:
     async def query_sql(self, state: AgentState) -> AgentState:
         """Query the SQL database for invoice data."""
         if not self.async_session_maker:
-            state["sql_results"] = "SQL database not available."
+            state["sql_results"] = "⚠️ SQL database not available."
             return state
         
         try:
             from ..models.database import Invoice
             async with self.async_session_maker() as session:
                 query_text = state["messages"][-1].content.lower()
+                print(f"[DEBUG] SQL Query for: {query_text}")  # Debug logging
                 
                 # Enhanced query interpretation with new fields
-                if "category" in query_text or "spending by" in query_text:
+                # Check specific status queries FIRST (before generic "how many")
+                if "pending" in query_text and ("how many" in query_text or "count" in query_text):
+                    # Specific: count pending invoices
+                    result = await session.execute(
+                        select(Invoice).where(Invoice.status == "Pending")
+                    )
+                    invoices = result.scalars().all()
+                    total_pending_amount = sum(inv.amount for inv in invoices)
+                    sql_results = f"**{len(invoices)} pending invoices** (Total: ${total_pending_amount:,.2f})"
+                    print(f"[DEBUG] Found {len(invoices)} pending invoices")
+                elif "overdue" in query_text and ("how many" in query_text or "count" in query_text):
+                    # Specific: count overdue invoices
+                    result = await session.execute(
+                        select(Invoice).where(Invoice.approval_status == "Overdue")
+                    )
+                    invoices = result.scalars().all()
+                    total_overdue_amount = sum(inv.amount for inv in invoices)
+                    sql_results = f"**{len(invoices)} overdue invoices** (Total: ${total_overdue_amount:,.2f})"
+                    print(f"[DEBUG] Found {len(invoices)} overdue invoices")
+                elif "paid" in query_text and ("how many" in query_text or "count" in query_text):
+                    # Specific: count paid invoices
+                    result = await session.execute(
+                        select(Invoice).where(Invoice.status == "Paid")
+                    )
+                    invoices = result.scalars().all()
+                    total_paid_amount = sum(inv.amount for inv in invoices)
+                    sql_results = f"**{len(invoices)} paid invoices** (Total: ${total_paid_amount:,.2f})"
+                    print(f"[DEBUG] Found {len(invoices)} paid invoices")
+                elif "category" in query_text or "spending by" in query_text:
                     # Category breakdown
                     result = await session.execute(
                         select(Invoice.category, func.sum(Invoice.amount).label('total'))
@@ -87,16 +116,6 @@ class AuditAgent:
                     sql_results = "Spending by department:\n" + "\n".join(
                         f"- {row.department}: ${row.total:.2f}" for row in rows if row.department
                     )
-                elif "overdue" in query_text:
-                    # Get overdue invoices
-                    result = await session.execute(
-                        select(Invoice).where(Invoice.approval_status == "Overdue")
-                    )
-                    invoices = result.scalars().all()
-                    sql_results = f"Overdue invoices ({len(invoices)}):\n" + "\n".join(
-                        f"- {inv.invoice_id}: {inv.vendor} - ${inv.amount:.2f} (Due: {inv.due_date})" 
-                        for inv in invoices[:10]
-                    )
                 elif "total" in query_text or "sum" in query_text:
                     # Get total amounts by vendor
                     result = await session.execute(
@@ -108,21 +127,50 @@ class AuditAgent:
                     sql_results = "Invoice totals by vendor:\n" + "\n".join(
                         f"- {row.vendor}: ${row.total:.2f}" for row in rows
                     )
-                elif "count" in query_text or "how many" in query_text:
-                    # Count invoices
-                    result = await session.execute(select(func.count()).select_from(Invoice))
-                    count = result.scalar()
-                    sql_results = f"Total number of invoices: {count}"
                 elif "pending" in query_text:
-                    # Get pending invoices
+                    # Get pending invoices (detail list)
                     result = await session.execute(
                         select(Invoice).where(Invoice.status == "Pending")
                     )
                     invoices = result.scalars().all()
-                    sql_results = f"Pending invoices ({len(invoices)}):\n" + "\n".join(
+                    total_pending_amount = sum(inv.amount for inv in invoices)
+                    sql_results = f"Found {len(invoices)} pending invoices (Total: ${total_pending_amount:,.2f}):\n" + "\n".join(
+                        f"- {inv.invoice_id}: {inv.vendor} - ${inv.amount:,.2f} (Due: {inv.due_date or 'N/A'})" 
+                        for inv in invoices[:10]
+                    )
+                    if len(invoices) > 10:
+                        sql_results += f"\n... and {len(invoices) - 10} more pending invoices"
+                elif "overdue" in query_text:
+                    # Get overdue invoices (detail list)
+                    result = await session.execute(
+                        select(Invoice).where(Invoice.approval_status == "Overdue")
+                    )
+                    invoices = result.scalars().all()
+                    total_overdue_amount = sum(inv.amount for inv in invoices)
+                    sql_results = f"Found {len(invoices)} overdue invoices (Total: ${total_overdue_amount:,.2f}):\n" + "\n".join(
+                        f"- {inv.invoice_id}: {inv.vendor} - ${inv.amount:.2f} (Due: {inv.due_date})" 
+                        for inv in invoices[:10]
+                    )
+                    if len(invoices) > 10:
+                        sql_results += f"\n... and {len(invoices) - 10} more overdue invoices"
+                elif "paid" in query_text:
+                    # Get paid invoices (detail list)
+                    result = await session.execute(
+                        select(Invoice).where(Invoice.status == "Paid")
+                    )
+                    invoices = result.scalars().all()
+                    total_paid_amount = sum(inv.amount for inv in invoices)
+                    sql_results = f"Found {len(invoices)} paid invoices (Total: ${total_paid_amount:,.2f}):\n" + "\n".join(
                         f"- {inv.invoice_id}: {inv.vendor} - ${inv.amount:.2f}" 
                         for inv in invoices[:10]
                     )
+                    if len(invoices) > 10:
+                        sql_results += f"\n... and {len(invoices) - 10} more paid invoices"
+                elif "count" in query_text or "how many" in query_text:
+                    # Generic count (fallback)
+                    result = await session.execute(select(func.count()).select_from(Invoice))
+                    count = result.scalar()
+                    sql_results = f"Total number of invoices: {count}"
                 else:
                     # Default: show all invoices summary
                     result = await session.execute(select(Invoice).limit(10))
@@ -133,8 +181,11 @@ class AuditAgent:
                     )
                 
                 state["sql_results"] = sql_results
+                print(f"[DEBUG] SQL Results length: {len(sql_results)} chars")  # Debug logging
         except Exception as e:
-            state["sql_results"] = f"Error querying database: {str(e)}"
+            error_msg = f"⚠️ Error querying database: {str(e)}"
+            state["sql_results"] = error_msg
+            print(f"[ERROR] SQL Query failed: {e}")  # Debug logging
         
         return state
 
@@ -154,6 +205,15 @@ class AuditAgent:
     async def generate_answer(self, state: AgentState) -> AgentState:
         """Generate final answer using LLM with context from SQL and/or RAG."""
         query = state["messages"][-1].content
+        route_taken = state.get("next_action", "unknown")
+        
+        # Add route visibility
+        route_emoji = {
+            "query_sql": "🗄️",
+            "query_rag": "📄",
+            "query_both": "🔄"
+        }
+        route_display = f"{route_emoji.get(route_taken, '🤔')} **Route: {route_taken.replace('query_', '').upper()}**\n\n"
         
         if self.llm:
             # Build context from available sources
@@ -170,7 +230,9 @@ class AuditAgent:
             system = (
                 "You are an accounting audit assistant with access to both structured invoice data "
                 "and audit reports/documents. Use the provided context to answer the user's question accurately. "
-                "If the context doesn't contain the answer, say so and provide a brief, professional response."
+                "IMPORTANT: If database query results are provided, use them as the PRIMARY source of truth. "
+                "Documents are supplementary. Answer directly based on the data given. "
+                "If the context doesn't contain the answer, say so clearly."
             )
             
             messages = [
@@ -179,15 +241,15 @@ class AuditAgent:
             ]
             
             response = await self.llm.ainvoke(messages)
-            response_text = response.content if hasattr(response, "content") else str(response)
+            response_text = route_display + (response.content if hasattr(response, "content") else str(response))
         else:
             # Fallback when DEEPSEEK_API_KEY is not set
             if state.get("sql_results"):
-                response_text = f"Based on the database:\n{state['sql_results']}"
+                response_text = route_display + f"Based on the database:\n{state['sql_results']}"
             elif state.get("context"):
-                response_text = f"Based on the documents:\n{state['context'][:500]}..."
+                response_text = route_display + f"Based on the documents:\n{state['context'][:500]}..."
             else:
-                response_text = "I don't have enough information to answer that question."
+                response_text = route_display + "I don't have enough information to answer that question."
         
         state["messages"] = state["messages"] + [AIMessage(content=response_text)]
         return state
