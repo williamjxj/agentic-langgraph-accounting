@@ -8,9 +8,6 @@
 
 A cutting-edge AI application for automated accounting audits and invoice processing. Built with the latest tech stack for AI agents **with true agentic workflows and intelligent routing**.
 
-![Application Screenshot](docs/screenshot.png)
-*Interactive Streamlit UI showing route visualization and intelligent query routing*
-
 ## 🚀 Tech Stack
 - **Orchestration**: [LangGraph](https://github.com/langchain-ai/langgraph) with `StateGraph` for real agentic workflows
 - **Framework**: [LangChain](https://github.com/langchain-ai/langchain) for RAG and tool integration
