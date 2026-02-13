@@ -585,7 +585,206 @@ Discover all the rich metadata:
 
 ---
 
-## 🔗 Related Documentation
+## � Tech Stack & Dependencies
+
+### HuggingFace Models & Datasets
+
+#### Active Models (1)
+1. **`sentence-transformers/all-MiniLM-L6-v2`**
+   - Purpose: Semantic embeddings for RAG retrieval
+   - Dimensions: 384
+   - Size: ~80MB
+   - Usage: Every query uses this for vector search
+   - License: Apache 2.0
+   - Performance: ~70ms inference on CPU
+
+#### Optional Datasets (3 Recommended)
+1. **`mychen76/invoices-and-receipts_ocr_v1`**
+   - Invoices: 2,238
+   - Format: OCR-processed invoices
+   - Use case: Data augmentation, testing
+
+2. **`katanaml-org/invoices-donut-data-v1`**
+   - Invoices: 500
+   - Format: Structured invoice data
+   - Use case: Additional training data
+
+3. **`sujet-ai/Sujet-Finance-Vision-10k`**
+   - Documents: 9,800
+   - Format: Financial documents
+   - Use case: Large-scale dataset testing
+
+**Total HuggingFace Resources:** 1 active model + 3 optional datasets
+
+---
+
+### Large Language Models (LLMs)
+
+#### Primary LLM (1)
+1. **DeepSeek Chat**
+   - Provider: DeepSeek AI
+   - API: OpenAI-compatible
+   - Usage: Answer generation, query understanding
+   - Fallback: Demo mode (pre-scripted responses if no API key)
+   - Environment variable: `DEEPSEEK_API_KEY`
+   - Base URL: `https://api.deepseek.com`
+
+**Total LLMs:** 1 (with graceful fallback)
+
+---
+
+### Third-Party Libraries & Packages
+
+#### Core Framework (11 packages)
+1. **LangChain Ecosystem** (6 packages)
+   - `langchain` - Core LLM framework
+   - `langchain-openai` - OpenAI/DeepSeek integration
+   - `langchain-community` - Community integrations
+   - `langchain-huggingface` - HuggingFace embeddings
+   - `langchain-chroma` - ChromaDB integration
+   - `langgraph` - StateGraph workflow orchestration
+
+2. **AI/ML Libraries** (5 packages)
+   - `sentence-transformers` - Sentence embeddings
+   - `transformers` - HuggingFace transformer models
+   - `openai` - OpenAI API client
+   - `tiktoken` - Token counting
+   - `chromadb` - Vector database
+
+#### Backend Infrastructure (8 packages)
+1. **Web Framework**
+   - `fastapi` - Modern async web framework
+   - `uvicorn` - ASGI server
+
+2. **Database**
+   - `sqlalchemy` - ORM for SQL database
+   - `SQLAlchemy[asyncio]` - Async support
+   - `aiosqlite` - Async SQLite driver
+
+3. **Data Validation**
+   - `pydantic` - Data validation
+   - `pydantic-settings` - Settings management
+
+4. **Async Operations**
+   - `asyncio` - Async I/O (built-in but listed)
+   - `aiohttp` - Async HTTP client
+
+#### Document Processing (5 packages)
+1. **PDF Handling**
+   - `pypdf` - PDF parsing
+   - `fpdf` - PDF generation
+   - `pdf2image` - PDF to image conversion
+
+2. **OCR**
+   - `pytesseract` - Python wrapper for Tesseract OCR
+   - `pillow` - Image processing
+
+#### Data & Retrieval (3 packages)
+1. **Data Manipulation**
+   - `pandas` - Data analysis and manipulation
+   - `tabulate` - Table formatting
+
+2. **Search Algorithm**
+   - `rank_bm25` - BM25 keyword search
+
+#### Frontend & Utilities (5 packages)
+1. **UI Framework**
+   - `streamlit` - Interactive web UI
+
+2. **Utilities**
+   - `python-multipart` - File upload handling
+   - `python-dotenv` - Environment variable management
+   - `datasets` - HuggingFace datasets library
+
+**Total Python Packages:** 32
+
+---
+
+### System Dependencies (2)
+
+1. **Tesseract OCR**
+   - Required by: `pytesseract`
+   - Installation: `brew install tesseract` (macOS) or `apt-get install tesseract-ocr` (Linux)
+   - Purpose: OCR for scanned PDFs
+
+2. **Poppler**
+   - Required by: `pdf2image`
+   - Installation: `brew install poppler` (macOS) or `apt-get install poppler-utils` (Linux)
+   - Purpose: PDF rendering to images
+
+**Total System Dependencies:** 2
+
+---
+
+### Storage & Data (3 Systems)
+
+1. **SQLite Database**
+   - File: `accounting.db`
+   - Size: ~12KB (250 invoices)
+   - Schema: 16-field invoice model
+   - Access: Async via SQLAlchemy
+
+2. **ChromaDB Vector Store**
+   - Directory: `chroma_db/`
+   - Embeddings: 384-dimensional
+   - Documents: ~270 chunks (invoices + reports)
+   - Persistence: Disk-based
+
+3. **File System Storage**
+   - Invoices: `data/invoices/` (250 PDFs)
+   - Reports: `data/reports/` (20+ Markdown files)
+   - Uploads: `data/uploads/` (user uploads)
+   - CSV: `data/invoice_summary.csv` (250 rows)
+
+**Total Storage Systems:** 3
+
+---
+
+### Complete Dependency Summary
+
+| Category | Count | Details |
+|----------|-------|---------|
+| **HuggingFace Models** | 1 | all-MiniLM-L6-v2 (active) |
+| **HuggingFace Datasets** | 3 | Optional, for augmentation |
+| **LLMs** | 1 | DeepSeek Chat |
+| **Python Packages** | 32 | From requirements.txt |
+| **System Dependencies** | 2 | Tesseract OCR, Poppler |
+| **Storage Systems** | 3 | SQLite, ChromaDB, File System |
+| **Total External Resources** | **42** | All dependencies combined |
+
+---
+
+### Installation Footprint
+
+**Download Sizes (approx):**
+- Python packages: ~500MB (including all dependencies)
+- Sentence Transformers model: ~80MB (first run only)
+- HuggingFace datasets (optional): ~1-2GB if loaded
+- System dependencies: ~50MB (Tesseract + Poppler)
+
+**Total Initial Install:** ~580MB (without optional datasets)
+
+**Runtime Memory Usage:**
+- Backend server: ~300-400MB
+- Streamlit frontend: ~150-200MB
+- Vector store (in-memory): ~50MB
+- Total: ~500-650MB RAM
+
+---
+
+### License Summary
+
+All dependencies use permissive open-source licenses:
+- **MIT License**: FastAPI, Uvicorn, Streamlit, LangChain, most utilities
+- **Apache 2.0**: Sentence Transformers, Transformers, ChromaDB
+- **BSD License**: pandas, SQLAlchemy, pypdf
+- **LGPL**: Tesseract OCR (system dependency)
+
+**No proprietary dependencies** - entire stack is open source!
+
+---
+
+## �🔗 Related Documentation
 
 - [README.md](../README.md) - Main project documentation
 - [improvement-1.md](improvement-1.md) - Phase 1: Real embeddings & agentic workflow
@@ -615,6 +814,8 @@ Share your interesting queries! Some creative examples:
 **Last Updated:** February 2026  
 **Dataset Version:** 250 invoices, 20+ reports  
 **Route Visibility:** ✅ Enabled  
-**Supported Query Types:** SQL, RAG, Hybrid
+**Supported Query Types:** SQL, RAG, Hybrid  
+**Total Dependencies:** 42 (1 LLM, 4 HF resources, 32 packages, 2 system deps, 3 storage systems)  
+**Tech Stack:** 100% Open Source
 
 **Happy Querying! 🚀**
